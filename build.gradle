@@ -36,4 +36,12 @@ tasks.named('test') {
 	useJUnitPlatform()
 }
 
+graalvmNative {
+	binaries {
+		main {
+			buildArgs('-Djava.security.properties=/absolute-path/azure-psql-passwordless-native/src/main/resources/custom.security')
+		}
+	}
+}
+
 
