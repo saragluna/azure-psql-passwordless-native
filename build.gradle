@@ -1,6 +1,6 @@
 plugins {
 	id 'java'
-	id 'org.springframework.boot' version '3.0.0'
+	id 'org.springframework.boot' version '3.0.1'
 	id 'io.spring.dependency-management' version '1.1.0'
 	id 'org.graalvm.buildtools.native' version '0.9.18'
 }
@@ -18,12 +18,13 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'com.azure.spring:spring-cloud-azure-starter-jdbc-postgresql'
+	implementation 'com.azure.spring:spring-cloud-azure-native-reachability:5.0.0-beta.1'
 	runtimeOnly 'org.postgresql:postgresql'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 }
 
 ext {
-	set('springCloudAzureVersion', "6.0.0-beta.4")
+	set('springCloudAzureVersion', "5.0.0")
 }
 
 dependencyManagement {
@@ -39,9 +40,13 @@ tasks.named('test') {
 graalvmNative {
 	binaries {
 		main {
-			buildArgs('-Djava.security.properties=/absolute-path/azure-psql-passwordless-native/src/main/resources/custom.security')
+			buildArgs('-Djava.security.properties=' + file("$rootDir/custom.security").absolutePath)
 		}
 	}
+}
+bootRun {
+	systemProperty("java.security.properties", file("$rootDir/custom.security").absolutePath)
+	systemProperty('spring.aot.enabled', 'true')
 }
 
 
